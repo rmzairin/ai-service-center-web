@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\ChatService;
 use App\Services\AIService;
+use App\Models\M_ChatSession;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,15 +22,46 @@ class ChatController extends Controller
     public function index()
     {
         $userId = Auth::id();
+        $feedbackService = app(\App\Services\FeedbackService::class);
 
-        $session = $this->chatService->getOrCreateSession($userId, 'web');
+        // 1. Cari session active
+        $session = M_ChatSession::where('user_id', $userId)
+            ->where('status', 'active')
+            ->latest()
+            ->first();
+
+        // 2. Kalau session active kosong (tidak ada pesan), hapus & cari yang lain
+        if ($session && !$session->messages()->exists()) {
+            $session->delete();
+            $session = null;
+        }
+
+        // 3. Kalau tidak ada session active, cari session AKTIF lain yang ada pesannya
+        //    (tidak lagi fallback ke session yang sudah closed)
+        if (!$session) {
+            $session = M_ChatSession::where('user_id', $userId)
+                ->where('status', 'active')
+                ->whereHas('messages')
+                ->latest()
+                ->first();
+        }
+
+        // 4. Kalau tidak ada session sama sekali, buat baru
+        if (!$session) {
+            $session = $this->chatService->createSession($userId, 'web');
+        }
+
         $messages = $this->chatService->getHistory($session->id);
+        $alreadyGiven = $feedbackService->userHasEverGiven($userId);
 
         return view('chat.index', [
-            'session'  => $session,
-            'messages' => $messages,
+            'session'      => $session,
+            'messages'     => $messages,
+            'alreadyGiven' => $alreadyGiven,
         ]);
     }
+
+    
 
     public function send(Request $request)
     {

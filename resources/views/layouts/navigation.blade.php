@@ -20,13 +20,6 @@
                         {{ __('Chat') }}
                     </x-nav-link>
 
-                    <x-nav-link :href="route('knowledge.index')" :active="request()->routeIs('knowledge.*')">
-                        {{ __('Knowledge') }}
-                    </x-nav-link>
-
-                    <x-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.*')">
-                        {{ __('Kategori') }}
-                    </x-nav-link>
                 </div>
             </div>
 
@@ -88,13 +81,6 @@
                     {{ __('Chat') }}
                 </x-responsive-nav-link>
 
-                <x-responsive-nav-link :href="route('knowledge.index')" :active="request()->routeIs('knowledge.*')">
-                    {{ __('Knowledge') }}
-                </x-responsive-nav-link>
-
-                <x-responsive-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.*')">
-                    {{ __('Kategori') }}
-                </x-responsive-nav-link>
             </div>
         </div>
 

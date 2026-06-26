@@ -17,6 +17,13 @@ class M_ChatFeedbacks extends Model
 
     public function session(): BelongsTo
     {
-        return $this->belongsTo(ChatSession::class, 'session_id');
+        return $this->belongsTo(M_ChatSession::class, 'session_id');
+    }
+
+    public function userHasEverGiven(int $userId): bool
+    {
+        return M_ChatFeedbacks::whereHas('session', function ($q) use ($userId) {
+            $q->where('user_id', $userId);
+        })->exists();
     }
 }

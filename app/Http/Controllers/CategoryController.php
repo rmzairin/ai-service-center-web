@@ -32,7 +32,7 @@ class CategoryController extends Controller
 
         $this->knowledgeService->createCategory($request->all());
 
-        return redirect()->route('categories.index')
+        return redirect()->route('admin.categories.index')
             ->with('success', 'Kategori berhasil ditambahkan.');
     }
 
@@ -45,7 +45,7 @@ class CategoryController extends Controller
 
         $this->knowledgeService->updateCategory($id, $request->all());
 
-        return redirect()->route('categories.index')
+        return redirect()->route('admin.categories.index')
             ->with('success', 'Kategori berhasil diperbarui.');
     }
 
@@ -53,7 +53,7 @@ class CategoryController extends Controller
     {
         $this->knowledgeService->deleteCategory($id);
 
-        return redirect()->route('categories.index')
+        return redirect()->route('admin.categories.index')
             ->with('success', 'Kategori berhasil dihapus.');
     }
 }

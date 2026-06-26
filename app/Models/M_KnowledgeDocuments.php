@@ -21,6 +21,6 @@ class M_KnowledgeDocuments extends Model
 
     public function uploader(): BelongsTo
     {
-        return $this->belongsTo(Admin::class, 'uploaded_by');
+        return $this->belongsTo(M_Admin::class, 'uploaded_by');
     }
 }

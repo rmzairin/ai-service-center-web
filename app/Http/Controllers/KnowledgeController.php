@@ -62,7 +62,7 @@ class KnowledgeController extends Controller
 
         $this->knowledgeService->createKnowledge($request->all(), Auth::id());
 
-        return redirect()->route('knowledge.index')
+        return redirect()->route('admin.knowledge.index')
             ->with('success', 'Knowledge berhasil ditambahkan.');
     }
 
@@ -107,7 +107,7 @@ class KnowledgeController extends Controller
 
         $this->knowledgeService->updateKnowledge($id, $request->all());
 
-        return redirect()->route('knowledge.index')
+        return redirect()->route('admin.knowledge.index')
             ->with('success', 'Knowledge berhasil diperbarui.');
     }
 
@@ -118,7 +118,7 @@ class KnowledgeController extends Controller
     {
         $this->knowledgeService->deleteKnowledge($id);
 
-        return redirect()->route('knowledge.index')
+        return redirect()->route('admin.knowledge.index')
             ->with('success', 'Knowledge berhasil dihapus.');
     }
 
@@ -129,7 +129,7 @@ class KnowledgeController extends Controller
     {
         $this->knowledgeService->toggleStatus($id);
 
-        return redirect()->route('knowledge.index')
+        return redirect()->route('admin.knowledge.index')
             ->with('success', 'Status berhasil diubah.');
     }
 }

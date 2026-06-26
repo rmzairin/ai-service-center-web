@@ -1,101 +1,198 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Knowledge Base
-        </h2>
+<x-admin-layout :title="'Knowledge Base'" :eyebrow="'Pertanyaan & jawaban'">
+
+    <x-slot name="topbarAction">
+        <a href="{{ route('admin.knowledge.create') }}" class="btn-primary">
+            <svg aria-hidden="true" style="width: 15px; height: 15px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Tambah Knowledge
+        </a>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-6xl mx-auto sm:px-6 lg:px-8 space-y-6">
+    @if ($errors->any())
+        <div class="alert-error">
+            {{ $errors->first() }}
+        </div>
+    @endif
 
-            @if (session('success'))
-                <div class="bg-green-100 text-green-700 px-4 py-2 rounded">
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            {{-- Header: Search, Filter, Tambah --}}
-            <div class="bg-white p-6 shadow sm:rounded-lg">
-                <div class="flex flex-wrap justify-between items-center gap-4 mb-4">
-                    <form method="GET" action="{{ route('knowledge.index') }}" class="flex gap-2 flex-1">
-                        <input type="text" name="search" value="{{ $search }}" placeholder="Cari pertanyaan/jawaban/keyword..." 
-                               class="flex-1 border-gray-300 rounded-md shadow-sm text-sm">
-
-                        <select name="category_id" class="border-gray-300 rounded-md shadow-sm text-sm">
-                            <option value="">Semua Kategori</option>
-                            @foreach($categories as $cat)
-                                <option value="{{ $cat->id }}" {{ $categoryId == $cat->id ? 'selected' : '' }}>
-                                    {{ $cat->category_name }}
-                                </option>
-                            @endforeach
-                        </select>
-
-                        <button type="submit" class="px-4 py-2 bg-gray-600 text-white rounded-md text-sm hover:bg-gray-700">
-                            Cari
-                        </button>
-                    </form>
-
-                    <a href="{{ route('knowledge.create') }}" class="px-4 py-2 bg-indigo-600 text-white rounded-md text-sm hover:bg-indigo-700 whitespace-nowrap">
-                        + Tambah Knowledge
-                    </a>
-                </div>
-
-                {{-- Tabel --}}
-                <table class="w-full text-sm text-left">
-                    <thead class="bg-gray-50 border-b">
-                        <tr>
-                            <th class="px-3 py-2">Pertanyaan</th>
-                            <th class="px-3 py-2">Kategori</th>
-                            <th class="px-3 py-2">Status</th>
-                            <th class="px-3 py-2 w-48">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($knowledge as $item)
-                            <tr class="border-b">
-                                <td class="px-3 py-2">
-                                    <a href="{{ route('knowledge.show', $item->id) }}" class="text-indigo-600 hover:underline">
-                                        {{ Str::limit($item->question, 60) }}
-                                    </a>
-                                </td>
-                                <td class="px-3 py-2">{{ $item->category->category_name ?? '-' }}</td>
-                                <td class="px-3 py-2">
-                                    <span class="px-2 py-1 text-xs rounded-full {{ $item->status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700' }}">
-                                        {{ $item->status }}
-                                    </span>
-                                </td>
-                                <td class="px-3 py-2 space-x-2">
-                                    <a href="{{ route('knowledge.edit', $item->id) }}" class="text-blue-600 hover:underline">Edit</a>
-
-                                    <form action="{{ route('knowledge.toggle', $item->id) }}" method="POST" class="inline">
-                                        @csrf
-                                        @method('PATCH')
-                                        <button type="submit" class="text-yellow-600 hover:underline">
-                                            {{ $item->status === 'active' ? 'Nonaktifkan' : 'Aktifkan' }}
-                                        </button>
-                                    </form>
-
-                                    <form action="{{ route('knowledge.destroy', $item->id) }}" method="POST" class="inline" onsubmit="return confirm('Yakin hapus?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:underline">Hapus</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="4" class="px-3 py-4 text-center text-gray-500">Belum ada data knowledge.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-
-                {{-- Pagination --}}
-                <div class="mt-4">
-                    {{ $knowledge->links() }}
+    {{-- Toolbar: Search & Filter --}}
+    <div class="surface" style="padding: 16px 20px; margin-bottom: 24px; box-shadow: 0 1px 0 rgba(0,0,0,0.15);">
+        <form method="GET" action="{{ route('admin.knowledge.index') }}" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end;">
+            <div style="flex: 1; min-width: 240px;">
+                <label class="field-label">Cari</label>
+                <div style="position: relative;">
+                    <svg aria-hidden="true" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: #9CA3AF;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input type="text" name="search" value="{{ $search }}" placeholder="Cari pertanyaan, jawaban, atau keyword..." style="padding-left: 34px;">
                 </div>
             </div>
 
+            <div style="min-width: 200px;">
+                <label class="field-label">Kategori</label>
+                <select name="category_id">
+                    <option value="">Semua Kategori</option>
+                    @foreach($categories as $cat)
+                        <option value="{{ $cat->id }}" {{ $categoryId == $cat->id ? 'selected' : '' }}>
+                            {{ $cat->category_name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <button type="submit" class="btn-primary" style="height: 39px;">
+                <svg aria-hidden="true" style="width: 15px; height: 15px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                Cari
+            </button>
+
+            @if($search || $categoryId)
+                <a href="{{ route('admin.knowledge.index') }}" class="link-action" style="padding-bottom: 10px;">
+                    Reset
+                </a>
+            @endif
+        </form>
+    </div>
+
+    {{-- Tabel --}}
+    <div class="surface" style="overflow: hidden;">
+        <div style="overflow-x: auto;">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Pertanyaan</th>
+                        <th style="width: 160px;">Kategori</th>
+                        <th style="width: 110px;">Status</th>
+                        <th style="width: 130px; text-align: right; padding-right: 20px;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($knowledge as $item)
+                        <tr>
+                            <td>
+                                <a href="{{ route('admin.knowledge.show', $item->id) }}" class="row-title">
+                                    {{ Str::limit($item->question, 60) }}
+                                </a>
+                            </td>
+                            <td>
+                                <span class="badge badge-inactive">{{ $item->category->category_name ?? '-' }}</span>
+                            </td>
+                            <td>
+                                @if($item->status === 'active')
+                                    <span class="badge badge-active"><span class="badge-dot"></span>Aktif</span>
+                                @else
+                                    <span class="badge badge-inactive"><span class="badge-dot badge-dot--off"></span>Nonaktif</span>
+                                @endif
+                            </td>
+                            <td>
+                                <div class="action-cluster">
+                                    <a href="{{ route('admin.knowledge.edit', $item->id) }}" class="icon-btn" title="Edit" aria-label="Edit">
+                                        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 15px; height: 15px;"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="M15 5l4 4"/></svg>
+                                    </a>
+
+                                    <form action="{{ route('admin.knowledge.toggle', $item->id) }}" method="POST" style="display: inline;">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="icon-btn icon-btn--amber"
+                                                title="{{ $item->status === 'active' ? 'Nonaktifkan' : 'Aktifkan' }}"
+                                                aria-label="{{ $item->status === 'active' ? 'Nonaktifkan' : 'Aktifkan' }}">
+                                            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 15px; height: 15px;"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+                                        </button>
+                                    </form>
+
+                                    <form action="{{ route('admin.knowledge.destroy', $item->id) }}" method="POST" id="delete-form-{{ $item->id }}" style="display: inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="button" class="icon-btn icon-btn--danger icon-btn--danger-solid" title="Hapus" aria-label="Hapus"
+                                                onclick="openDeleteModal('delete-form-{{ $item->id }}', {{ Js::from(Str::limit($item->question, 70)) }})">
+                                            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 15px; height: 15px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" style="text-align: center; padding: 48px 12px; color: #6B7280;">
+                                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width: 28px; height: 28px; display: block; margin: 0 auto 10px; color: #4B5563;"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/><line x1="4" y1="4" x2="20" y2="20" stroke="#4B5563"/></svg>
+                                <p style="margin: 0 0 4px; color: #9CA3AF; font-weight: 500; font-size: 13.5px;">Belum ada data knowledge</p>
+                                <p style="margin: 0; font-size: 12.5px;">Tambahkan entri baru untuk mulai mengisi knowledge base.</p>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        @if ($knowledge->hasPages())
+            <div class="pager-bar">
+                <p class="pager-info">
+                    Menampilkan <b>{{ $knowledge->firstItem() }}</b>–<b>{{ $knowledge->lastItem() }}</b> dari <b>{{ $knowledge->total() }}</b> entri
+                </p>
+                <div class="pager-nav">
+                    @if ($knowledge->onFirstPage())
+                        <span class="pg-btn pg-btn--disabled">‹ Sebelumnya</span>
+                    @else
+                        <a href="{{ $knowledge->previousPageUrl() }}" class="pg-btn">‹ Sebelumnya</a>
+                    @endif
+
+                    @foreach ($knowledge->getUrlRange(max(1, $knowledge->currentPage() - 2), min($knowledge->lastPage(), $knowledge->currentPage() + 2)) as $page => $url)
+                        @if ($page == $knowledge->currentPage())
+                            <span class="pg-btn pg-btn--active">{{ $page }}</span>
+                        @else
+                            <a href="{{ $url }}" class="pg-btn">{{ $page }}</a>
+                        @endif
+                    @endforeach
+
+                    @if ($knowledge->hasMorePages())
+                        <a href="{{ $knowledge->nextPageUrl() }}" class="pg-btn">Selanjutnya ›</a>
+                    @else
+                        <span class="pg-btn pg-btn--disabled">Selanjutnya ›</span>
+                    @endif
+                </div>
+            </div>
+        @endif
+    </div>
+
+    {{-- Modal konfirmasi hapus (kustom, menggantikan confirm() bawaan browser) --}}
+    <div id="delete-modal-backdrop" class="modal-backdrop" hidden>
+        <div class="modal-card" role="alertdialog" aria-modal="true" aria-labelledby="delete-modal-title">
+            <div class="modal-icon">
+                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <p id="delete-modal-title" class="modal-title">Hapus knowledge ini?</p>
+            <p class="modal-text" id="delete-modal-text"></p>
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary" onclick="closeDeleteModal()">Batal</button>
+                <button type="button" class="btn-danger" id="delete-modal-confirm">Hapus</button>
+            </div>
         </div>
     </div>
-</x-app-layout>
+
+    <script>
+        let activeDeleteForm = null;
+
+        function openDeleteModal(formId, label) {
+            activeDeleteForm = document.getElementById(formId);
+            document.getElementById('delete-modal-text').textContent = label
+                ? '"' + label + '" akan dihapus permanen dan tidak dapat dikembalikan.'
+                : 'Data ini akan dihapus permanen dan tidak dapat dikembalikan.';
+            document.getElementById('delete-modal-backdrop').hidden = false;
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('delete-modal-backdrop').hidden = true;
+            activeDeleteForm = null;
+        }
+
+        document.getElementById('delete-modal-confirm').addEventListener('click', function () {
+            if (activeDeleteForm) {
+                activeDeleteForm.submit();
+            }
+        });
+
+        document.getElementById('delete-modal-backdrop').addEventListener('click', function (e) {
+            if (e.target === this) closeDeleteModal();
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closeDeleteModal();
+        });
+    </script>
+
+</x-admin-layout>

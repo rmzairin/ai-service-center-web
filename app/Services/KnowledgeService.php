@@ -63,7 +63,7 @@ class KnowledgeService
             $query->where('category_id', $categoryId);
         }
 
-        return $query->paginate(10)->withQueryString();
+        return $query->paginate(5)->withQueryString();
     }
 
     public function getKnowledgeById(int $id): M_KnowledgeBase
