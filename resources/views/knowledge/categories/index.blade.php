@@ -69,14 +69,15 @@
                                         class="icon-btn" title="Edit" aria-label="Edit">
                                         <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 15px; height: 15px;"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="M15 5l4 4"/></svg>
                                     </button>
-                                    <form action="{{ route('admin.categories.destroy', $category->id) }}"
-                                          method="POST" style="display: inline;"
-                                          onsubmit="return confirm('Yakin hapus kategori ini?')">
+                                    <form action="{{ route('admin.categories.destroy', $category->id) }}" id="delete-form-{{ $category->id }}"
+                                          method="POST" style="display: inline;">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="icon-btn icon-btn--danger" title="Hapus" aria-label="Hapus">
+                                        <button type="button" class="icon-btn icon-btn--danger" title="Hapus" aria-label="Hapus" onclick="openDeleteModal('{{ route('admin.categories.destroy', $category->id) }}', '{{ addslashes($category->category_name) }}')"><i class="ti ti-trash"></i>
                                             <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 15px; height: 15px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
                                         </button>
+                                        
+
                                     </form>
                                 </div>
                             </td>

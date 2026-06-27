@@ -99,7 +99,7 @@
                                         @csrf
                                         @method('DELETE')
                                         <button type="button" class="icon-btn icon-btn--danger icon-btn--danger-solid" title="Hapus" aria-label="Hapus"
-                                                onclick="openDeleteModal('delete-form-{{ $item->id }}', {{ Js::from(Str::limit($item->question, 70)) }})">
+                                            onclick="openDeleteModal('{{ route('admin.knowledge.destroy', $item->id) }}', '{{ addslashes($item->question) }}')"><i class="ti ti-trash"></i>
                                             <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 15px; height: 15px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
                                         </button>
                                     </form>
@@ -149,50 +149,6 @@
         @endif
     </div>
 
-    {{-- Modal konfirmasi hapus (kustom, menggantikan confirm() bawaan browser) --}}
-    <div id="delete-modal-backdrop" class="modal-backdrop" hidden>
-        <div class="modal-card" role="alertdialog" aria-modal="true" aria-labelledby="delete-modal-title">
-            <div class="modal-icon">
-                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-            </div>
-            <p id="delete-modal-title" class="modal-title">Hapus knowledge ini?</p>
-            <p class="modal-text" id="delete-modal-text"></p>
-            <div class="modal-actions">
-                <button type="button" class="btn-secondary" onclick="closeDeleteModal()">Batal</button>
-                <button type="button" class="btn-danger" id="delete-modal-confirm">Hapus</button>
-            </div>
-        </div>
-    </div>
 
-    <script>
-        let activeDeleteForm = null;
-
-        function openDeleteModal(formId, label) {
-            activeDeleteForm = document.getElementById(formId);
-            document.getElementById('delete-modal-text').textContent = label
-                ? '"' + label + '" akan dihapus permanen dan tidak dapat dikembalikan.'
-                : 'Data ini akan dihapus permanen dan tidak dapat dikembalikan.';
-            document.getElementById('delete-modal-backdrop').hidden = false;
-        }
-
-        function closeDeleteModal() {
-            document.getElementById('delete-modal-backdrop').hidden = true;
-            activeDeleteForm = null;
-        }
-
-        document.getElementById('delete-modal-confirm').addEventListener('click', function () {
-            if (activeDeleteForm) {
-                activeDeleteForm.submit();
-            }
-        });
-
-        document.getElementById('delete-modal-backdrop').addEventListener('click', function (e) {
-            if (e.target === this) closeDeleteModal();
-        });
-
-        document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') closeDeleteModal();
-        });
-    </script>
 
 </x-admin-layout>

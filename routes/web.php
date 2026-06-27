@@ -6,7 +6,10 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\KnowledgeController;
 use App\Http\Controllers\Api\KnowledgeApiController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 
 use App\Services\AnalyticsService;
@@ -112,7 +115,21 @@ Route::prefix('admin')->name('admin.')->group(function () {
             ]);
         })->name('feedback.index');
 
-});
+        Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
+        Route::post('/settings', [SettingController::class, 'update'])->name('settings.update');
+
+        // User Management
+        Route::get('/users', [UserController::class, 'index'])->name('users.index');
+        Route::post('/users', [UserController::class, 'store'])->name('users.store');
+        Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
+        Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+
+        // Admin Management
+        Route::get('/admins', [AdminController::class, 'index'])->name('admins.index');
+        Route::post('/admins', [AdminController::class, 'store'])->name('admins.store');
+        Route::put('/admins/{id}', [AdminController::class, 'update'])->name('admins.update');
+        Route::delete('/admins/{id}', [AdminController::class, 'destroy'])->name('admins.destroy');
+        });
 
 
 require __DIR__.'/auth.php';

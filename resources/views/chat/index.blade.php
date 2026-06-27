@@ -361,7 +361,7 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M9 13v2"/><path d="M15 13v2"/></svg>
                 </div>
                 <div class="bot-info">
-                    <h3>Asisten AI</h3>
+                    <h3>{{ $botName ?? 'Asisten AI' }}</h3>
                     <span>Siap membantu Anda 24/7</span>
                 </div>
             </div>
@@ -382,11 +382,11 @@
                         </div>
                     </div>
                 @empty
-                    <div class="empty-state" id="empty-state">
-                        <div class="empty-icon">✨</div>
-                        <p style="font-size: 14.5px; font-weight: 500; color: rgba(255,255,255,0.75);">Mulai percakapan</p>
-                        <p style="font-size: 12.5px; color: rgba(255,255,255,0.4);">Ketik pertanyaan Anda di bawah ini</p>
-                    </div>
+                <div class="empty-state" id="empty-state">
+                    <div class="empty-icon">✨</div>
+                    <p style="font-size: 14.5px; font-weight: 500; color: rgba(255,255,255,0.75);">{{ $botName ?? 'Asisten AI' }}</p>
+                    <p style="font-size: 12.5px; color: rgba(255,255,255,0.4);">{{ $welcomeMessage ?? 'Ketik pertanyaan Anda di bawah ini' }}</p>
+                </div>
                 @endforelse
 
                 <div class="typing-indicator" id="typing-wrap" style="display: none;">

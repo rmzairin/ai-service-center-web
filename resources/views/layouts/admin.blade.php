@@ -722,7 +722,7 @@
             .form-actions { flex-direction: column-reverse; }
             .form-actions .btn-primary, .form-actions .btn-secondary { justify-content: center; }
         }
-        
+
                 /* Tambahan khusus: bikin tombol Hapus menonjol di kondisi default, */
         /* bukan cuma berubah warna saat hover seperti icon-btn lain. */
         /* Class baru, tidak menimpa .icon-btn--danger yang sudah ada di layout. */
@@ -818,6 +818,173 @@
             transition: background 0.15s ease;
         }
         .btn-danger:hover { background: #C24848; }
+
+        /* ============================
+        TOMBOL AKSI TABEL
+        ============================ */
+        .btn-edit {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            border-radius: 7px;
+            font-size: 12.5px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            transition: background 0.15s, transform 0.1s;
+            background: rgba(99,102,241,0.15);
+            color: #A5B4FC;
+            border: 1px solid rgba(99,102,241,0.25);
+        }
+        .btn-edit:hover {
+            background: rgba(99,102,241,0.25);
+            transform: translateY(-1px);
+        }
+        .btn-delete {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            border-radius: 7px;
+            font-size: 12.5px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            transition: background 0.15s, transform 0.1s;
+            background: rgba(239,68,68,0.12);
+            color: #FCA5A5;
+            border: 1px solid rgba(239,68,68,0.2);
+        }
+        .btn-delete:hover {
+            background: rgba(239,68,68,0.22);
+            transform: translateY(-1px);
+        }
+        .btn-view {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            border-radius: 7px;
+            font-size: 12.5px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            border: 1px solid rgba(61,220,156,0.2);
+            font-family: 'Inter', sans-serif;
+            transition: background 0.15s, transform 0.1s;
+            background: rgba(61,220,156,0.1);
+            color: #4FE6AB;
+        }
+        .btn-view:hover {
+            background: rgba(61,220,156,0.18);
+            transform: translateY(-1px);
+        }
+        .action-group {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        /* ============================
+        MODAL HAPUS
+        ============================ */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.active {
+            display: flex;
+            animation: fadeIn 0.15s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+        .modal-box {
+            background: #20262F;
+            border: 1px solid #323A47;
+            border-radius: 18px;
+            padding: 28px;
+            width: 100%;
+            max-width: 400px;
+            margin: 16px;
+            animation: slideUp 0.2s ease;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(16px); opacity: 0; }
+            to   { transform: translateY(0); opacity: 1; }
+        }
+        .modal-icon {
+            width: 52px;
+            height: 52px;
+            background: rgba(239,68,68,0.12);
+            border: 1px solid rgba(239,68,68,0.2);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 18px;
+            font-size: 22px;
+        }
+        .modal-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: #FAFBFC;
+            margin-bottom: 8px;
+        }
+        .modal-desc {
+            font-size: 13.5px;
+            color: #9CA3AF;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+        .modal-desc strong {
+            color: #E4E7EB;
+            font-weight: 500;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .modal-btn-cancel {
+            flex: 1;
+            padding: 10px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #D7DAE0;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: background 0.15s;
+        }
+        .modal-btn-cancel:hover { background: rgba(255,255,255,0.1); }
+        .modal-btn-confirm {
+            flex: 1;
+            padding: 10px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #EF4444, #DC2626);
+            border: none;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: opacity 0.15s, transform 0.1s;
+        }
+        .modal-btn-confirm:hover { opacity: 0.9; transform: translateY(-1px); }
     </style>
 </head>
 <body>
@@ -865,6 +1032,26 @@
                 </a>
             </nav>
 
+            <nav class="nav-group">
+                <p class="nav-label">Sistem</p>
+                <a href="{{ route('admin.settings.index') }}" class="nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
+                    <i class="ti ti-settings" aria-hidden="true"></i>
+                    Pengaturan
+                </a>
+            </nav>
+
+            <nav class="nav-group">
+                <p class="nav-label">Manajemen</p>
+                <a href="{{ route('admin.users.index') }}" class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+                    <i class="ti ti-users" aria-hidden="true"></i>
+                    User
+                </a>
+                <a href="{{ route('admin.admins.index') }}" class="nav-link {{ request()->routeIs('admin.admins.*') ? 'active' : '' }}">
+                    <i class="ti ti-shield-check" aria-hidden="true"></i>
+                    Admin
+                </a>
+            </nav>
+
             <div class="sidebar-foot">
                 <div class="admin-chip">
                     <div class="admin-avatar">{{ strtoupper(substr(Auth::guard('admin')->user()->nama ?? 'A', 0, 2)) }}</div>
@@ -904,6 +1091,53 @@
             </div>
         </div>
     </div>
+
+    {{-- Modal Konfirmasi Hapus --}}
+    <div class="modal-overlay" id="delete-modal">
+        <div class="modal-box">
+            <div class="modal-icon">🗑️</div>
+            <p class="modal-title">Konfirmasi Hapus</p>
+            <p class="modal-desc" id="modal-desc">
+                Apakah Anda yakin ingin menghapus <strong id="modal-item-name"></strong>?
+                Tindakan ini tidak dapat dibatalkan.
+            </p>
+            <div class="modal-actions">
+                <button class="modal-btn-cancel" onclick="closeDeleteModal()">Batal</button>
+                <form id="modal-delete-form" method="POST" style="flex: 1;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="modal-btn-confirm" style="width: 100%;">
+                        Ya, Hapus
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function openDeleteModal(action, itemName) {
+        document.getElementById('modal-delete-form').action = action;
+        document.getElementById('modal-item-name').textContent = itemName;
+        document.getElementById('delete-modal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('delete-modal').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // Tutup modal kalau klik overlay
+    document.getElementById('delete-modal').addEventListener('click', function(e) {
+        if (e.target === this) closeDeleteModal();
+    });
+
+    // Tutup modal kalau tekan ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeDeleteModal();
+    });
+    </script>
+    
 
 </body>
 </html>
